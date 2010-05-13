@@ -27,7 +27,8 @@ function crearChecksTablas(&$form,$tablas)
 }
 
 $mapeador = new Mapeador();
-$mapeador->setDB($_POST['db_host'],$_POST['db_user'],$_POST['db_pass'],$_POST['db_name'],$_POST['db_ms'],$_POST['db_port']);
+if(isset($_POST['paso1']))
+	$mapeador->setDB($_POST['db_host'],$_POST['db_user'],$_POST['db_pass'],$_POST['db_name'],$_POST['db_ms'],$_POST['db_port']);
 $form = new BaseForm('mapeoFCE');
 
 initForm($form);
