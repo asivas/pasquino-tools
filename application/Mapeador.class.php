@@ -1,5 +1,5 @@
 <?php
-require_once('visual/smarty/libs/Smarty.class.php');
+
 require_once('datos/adodb/adodb.inc.php');	
 
 class Mapeador {	

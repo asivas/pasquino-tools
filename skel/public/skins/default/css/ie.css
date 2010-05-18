@@ -1,0 +1,13 @@
+#detalleGraduado {
+
+  position:absolute;
+  /* IE5.5+/Win - this is more specific than the IE 5.0 version */
+  right: auto; bottom: auto;
+  left: expression( ( -300 - cargando.offsetWidth + ( document.documentElement.clientWidth ? document.documentElement.clientWidth : document.body.clientWidth ) + ( ignoreMe2 = document.documentElement.scrollLeft ? document.documentElement.scrollLeft : document.body.scrollLeft ) ) + 'px' );
+  /* top: expression( ( -10 - cargando.offsetHeight + ( document.documentElement.clientHeight ? document.documentElement.clientHeight : document.body.clientHeight ) + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' ); */
+  top: expression( ( 150 + ( ignoreMe = document.documentElement.scrollTop ? document.documentElement.scrollTop : document.body.scrollTop ) ) + 'px' );
+
+  }
+#Meta {
+	width: 450px;
+}
