@@ -63,7 +63,7 @@ class Mapeador {
 		$textoMetodos = "";
 		
 		$textoClase = "<?php\nclass {$nombreClase} {";
-		$textoDao = "<?php\nrequire_once \"SistemaFCE/dao/DaoBase.class.php\";\nclass Dao{$nombreClase} extends BaseDao{\n}";
+		$textoDao = "<?php\nrequire_once \"SistemaFCE/dao/DaoBase.class.php\";\nclass Dao{$nombreClase} extends DaoBase{\n}";
 		$textoXml = 
 '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapping PUBLIC "-//FCEunicen//DTD Mapping//ES" "http://apps.econ.unicen.edu.ar/public/dtd/mapping.dtd" >

@@ -53,7 +53,6 @@ class MapeadorMod extends BaseToolsMod {
 		
 		if(isset($_POST['mapear']))
 		{
-			//TODO: c|rear los archivos
 			$this->mapeador->mapearTablas($_POST['tablas'],$_POST['dir_output']);
 			if(!empty($this->mapeador->errors))
 			{
