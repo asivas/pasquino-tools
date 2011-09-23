@@ -43,13 +43,37 @@ class Mapeador {
 	}
 	private function uam($nombre) 
 	{
-		$palabrasNombre = split("_",$nombre);
+		$palabrasNombre = split("[_ ]",$nombre);
+		$palabrasNombre[0] = strtolower($palabrasNombre[0]);
 		if(count($palabrasNombre)>1)
-		{
+		{	
 			for($i=1;$i<count($palabrasNombre);$i++)
 				$palabrasNombre[$i] = ucfirst($palabrasNombre[$i]);	
 		}
 		return implode($palabrasNombre);
+	}
+	
+	function _textoPropiedad($nombreProp,$campo=null)
+	{
+		return "	private \${$nombreProp};\n";
+	}
+	
+	function _textoMetodos($nombreProp,$campo=null)
+	{
+		return  "
+	function get".ucfirst($nombreProp)."(){
+		return \$this->{$nombreProp};
+	}
+	
+	function set".ucfirst($nombreProp)."(\$new".ucfirst($nombreProp)."){
+		\$this->{$nombreProp} = \$new".ucfirst($nombreProp).";
+	}";
+	}
+	
+	function _textoXml($tag,$nombreProp,$campo=null)
+	{
+		$nombreCampo = $campo['Field'];
+		return "		<{$tag} columna=\"{$nombreCampo}\" nombre=\"{$nombreProp}\" />\n";
 	}
 	
 	function mapearTabla($tabla,$dirEntidades,$dirMappings,$dirDaos)
@@ -72,28 +96,32 @@ class Mapeador {
 		$rs = $this->db->Execute("SHOW columns FROM {$tabla}");
 		while($campo = $rs->FetchRow())
 		{
-			$nombreCampo = $campo['Field'];
-			$nombreProp = $this->uam($nombreCampo);
-			$textoPropiedades .= "	private \${$nombreProp};\n";
-			$textoMetodos .= "
-	function get".ucfirst($nombreProp)."(){
-		return \$this->{$nombreProp};
-	}
-	
-	function set".ucfirst($nombreProp)."(\$new".ucfirst($nombreProp)."){
-		\$this->{$nombreProp} = \$new".ucfirst($nombreProp).";
-	}";			
-			$tag='propiedad';
 			if($campo['Key']=='PRI')
+				$ids[] = $campo;
+			else 
+				$props[] = $campo;
+		}
+		if(is_array($ids))
+			foreach ($ids as $campo)
 			{
+				$nombreCampo = $campo['Field'];
+				$nombreProp = $this->uam($nombreCampo);
+				$textoPropiedades .= $this->_textoPropiedad($nombreProp,$campo);
+				$textoMetodos .= $this->_textoMetodos($nombreProp,$campo);			
 				$tag='id';
 				$id[$nombreCampo] = $nombreProp; 
+				$textoXml .= $this->_textoXml($tag, $nombreProp,$campo);
 			}
-				
-			$textoXml .= 
-"		<{$tag} columna=\"{$nombreCampo}\" nombre=\"{$nombreProp}\" />\n";
-			
-		}
+		if(is_array($props))
+			foreach ($props as $campo)
+			{
+				$nombreCampo = $campo['Field'];
+				$nombreProp = $this->uam($nombreCampo);
+				$textoPropiedades .= $this->_textoPropiedad($nombreProp,$campo);
+				$textoMetodos .= $this->_textoMetodos($nombreProp,$campo);			
+				$tag='propiedad';
+				$textoXml .= $this->_textoXml($tag, $nombreProp,$campo);
+			}
 		if(count($id)>1)
 		{
 			foreach($id as $col => $prop)
