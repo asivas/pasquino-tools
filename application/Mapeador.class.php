@@ -26,6 +26,8 @@ class Mapeador {
 		//$this->dbConfig = array('host'=>$host,'user'=>$user,'pass'=>$pass,'name'=>$db,'port'=$port);
 		$this->db = &ADONewConnection($dbms); # eg 'mysql' or 'postgres'
         $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
+        if(isset($port))
+        	$host = "$host:$port";
         $this->db->NConnect($host, $user, $pass, $db);
 	}
 	
