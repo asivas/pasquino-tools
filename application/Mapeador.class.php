@@ -187,5 +187,53 @@ class Mapeador {
 				$this->mapearTabla($t,$dirEntidades,$dirMappings,$dirDaos);
 			}
 		}
+		
+		$this->crearConfig($tablas, $dirOutput, $nombreDirEntidades);
+	}
+	
+	
+	function crearConfig($tablas,$dirOutput)
+	{
+		$textoXmlConfig = '<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sistema PUBLIC "-//FCEunicen//DTD Config//ES" "http://apps.econ.unicen.edu.ar/public/dtd/config.dtd" >
+<sistema nombre="" version-pasquino="1.6" version="0.1">
+	<date-formats>
+		<date-format>%d/%m/%Y</date-format>
+		<datetime-format>%d/%m/%Y %H:%M</datetime-format>
+		<time-format>%H:%M</time-format>
+	</date-formats>
+	<mappings path="conf/mappings" >';
+		foreach($tablas as $t=>$dummy)
+		{
+			$nombreClase = ucfirst($this->uam($t));
+			$textoXmlConfig .= '		<mapping archivo="'.$filenameXml = strtolower($nombreClase).'.xml" clase="'.$nombreClase.'" />
+';
+		}
+	$textoXmlConfig .= '</mappings>
+
+	<data-sources default="">
+	</data-sources>
+	<modulos default="" path="modulos">
+	</modulos>
+	<templates default="default" path="skins">
+		<template dir="default" nombre="default">
+			<dir ruta="common">
+				<archivo nombre="default.tpl" sys-name="Default" />
+				<archivo nombre="base.tpl" sys-name="Base" />
+				<archivo nombre="head.tpl" />
+				<archivo nombre="header.tpl" />
+				<archivo nombre="footer.tpl" />
+				<archivo nombre="menu.tpl" sys-name="Menu" />
+			</dir>
+			<archivo nombre="formLogin.tpl"/>
+			<archivo nombre="sinPermisos.tpl" />
+		</template>
+	</templates>
+</sistema>';	
+	
+	$fp = fopen($dirOutput.'/config.xml', 'w');
+	fwrite($fp, $textoXmlConfig);
+	fclose($fp);	
+	
 	}
 }
