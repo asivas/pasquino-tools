@@ -88,7 +88,7 @@ class Mapeador {
 		$textoPropiedades = "";
 		$textoMetodos = "";
 		
-		$textoClase = "<?php\nclass {$nombreClase} {";
+		$textoClase = "<?php\nrequire_once \"SistemaFCE/entidad/Entidad.class.php\"\nclass {$nombreClase} extends Entidad {";
 		$textoDao = "<?php\nrequire_once \"SistemaFCE/dao/DaoBase.class.php\";\nclass Dao{$nombreClase} extends DaoBase{\n}";
 		$textoXml = 
 '<?xml version="1.0" encoding="UTF-8"?>
