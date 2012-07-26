@@ -63,11 +63,11 @@ class Mapeador {
 	function _textoMetodos($nombreProp,$campo=null)
 	{
 		return  "
-	function get".ucfirst($nombreProp)."(){
+	public function get".ucfirst($nombreProp)."(){
 		return \$this->{$nombreProp};
 	}
 	
-	function set".ucfirst($nombreProp)."(\$new".ucfirst($nombreProp)."){
+	public function set".ucfirst($nombreProp)."(\$new".ucfirst($nombreProp)."){
 		\$this->{$nombreProp} = \$new".ucfirst($nombreProp).";
 	}";
 	}
@@ -132,7 +132,7 @@ class Mapeador {
 			}
 			$arrId = trim($arrId,',');
 			$textoMetodos = "
-	function getId(){
+	public function getId(){
 		return array({$arrId});
 	}
 	
