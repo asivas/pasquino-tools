@@ -1,0 +1,10 @@
+input[name=dir_output] {
+	width: 600px;
+}
+
+#tablas label,
+label[for=toggletodos] {
+	display: inline-block;
+	margin-left: 5px;
+	font-weight: bold;
+}

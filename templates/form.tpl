@@ -3,15 +3,23 @@
 	{$resultado} <br>
 {/foreach}
 <form {$maperForm.attributes}>
-	{foreach from=$maperForm item=element key=elemKey}
-	{if isset($element.html)}
+	{foreach from=$maperForm item=element key=elemKey}	
+	{if is_array($element) && isset($element.html)}
 		{if !empty($element.label)}{$element.label} :{/if} {$element.html}<br/>
-	{/if}
+	{/if}	
+	
 	{if $elemKey == 'tablas'}
+	<br>
+	<div><input type="checkbox" id="toggletodos"/> <label for="toggletodos">Todos</label> </div>
+	<br>
+	<div id="tablas">
 		{foreach from=$element item=chkbox key=tabla}
-		{$chkbox.label}: {$chkbox.html}<br/>
+		<div>{$chkbox.html}</div>
 		{/foreach}
+	</div>
 	{/if}		
+	
 	{/foreach}
+	
 {$maperForm.hidden}
 </form>
