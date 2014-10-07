@@ -1,5 +1,6 @@
 <?php
-require_once(dirname(__FILE__)."/BaseToolsMod.class.php");
+require_once 'BaseToolsMod.class.php';
+require_once "Mapeador.class.php";
 
 class MapeadorMod extends BaseToolsMod {
 	var $mapeador;
@@ -53,7 +54,8 @@ class MapeadorMod extends BaseToolsMod {
 		
 		if(isset($_POST['mapear']))
 		{
-			$this->mapeador->mapearTablas($_POST['tablas'],$_POST['dir_output']);
+			$results = $this->mapeador->mapearTablas($_POST['tablas'],$_POST['dir_output']);
+			$this->setTplVar('resultadosMapeo', $results);
 			if(!empty($this->mapeador->errors))
 			{
 				print "<div style='color:red'>";
@@ -64,12 +66,9 @@ class MapeadorMod extends BaseToolsMod {
 				print "</div>";
 			}
 		}
-		$this->form->Display();
-	}
-	
-	function getAccionPredeterminada()
-	{
-		return "mapear";
+		$this->renderForm('maperForm',$this->form);
+		$this->mostrar('form.tpl');
+		//$this->form->Display();
 	}
 	
 }

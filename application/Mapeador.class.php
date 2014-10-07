@@ -182,13 +182,13 @@ class Mapeador {
 		{
 			foreach($tablas as $t=>$dummy)
 			{
-				print "mapeando {$t}<br>";
-				ob_flush();
+				$results[] = "mapeando {$t}";				
 				$this->mapearTabla($t,$dirEntidades,$dirMappings,$dirDaos);
 			}
 		}
 		
 		$this->crearConfig($tablas, $dirOutput, $nombreDirEntidades);
+		return $results;
 	}
 	
 	

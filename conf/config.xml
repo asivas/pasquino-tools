@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sistema PUBLIC "-//FCEunicen//DTD Config//ES" "http://apps.econ.unicen.edu.ar/public/dtd/config.dtd" >
+<sistema nombre="Paquino Tools" version-pasquino="0.6" version="1.0a">
+	<mappings path="" /><modulos default="Tools" path="modulos">
+	<modulo nombre="Tools">
+		<archivos>
+			<coreDir>
+				<archivoPrincipal nombre="ToolsMod.class.php" ></archivoPrincipal>
+			</coreDir>
+		</archivos>
+		<menuPrincipal tag="" accion="" name=""></menuPrincipal>
+	</modulo>
+	<modulo nombre="Mapeador">
+		<archivos>
+			<coreDir>
+				<archivoPrincipal nombre="MapeadorMod.class.php" ></archivoPrincipal>
+			</coreDir>
+		</archivos>
+		<acciones default="mapear">
+			<accion nombre="mapear"></accion></acciones>
+		<menuPrincipal tag="Mapeador" accion="mapear" name="mapeador"></menuPrincipal>
+	</modulo>
+	<modulo nombre="CreadroProyectos">
+		<archivos>
+			<coreDir>
+				<archivoPrincipal nombre="CreadorProyectosMod.class.php" ></archivoPrincipal>
+			</coreDir>
+		</archivos>
+		<menuPrincipal tag="" accion="" name=""></menuPrincipal>
+	</modulo></modulos>
+	<templates default="default" path="templates">
+		<template dir=""></template></templates>
+</sistema>

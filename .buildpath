@@ -2,6 +2,7 @@
 <buildpath>
 	<buildpathentry combineaccessrules="false" kind="prj" path="/pasquino"/>
 	<buildpathentry kind="con" path="org.eclipse.php.core.LANGUAGE"/>
+	<buildpathentry kind="src" path="public"/>
 	<buildpathentry combineaccessrules="false" kind="prj" path="/PEAR"/>
 	<buildpathentry kind="src" path="application"/>
 </buildpath>

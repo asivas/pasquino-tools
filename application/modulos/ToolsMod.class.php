@@ -1,5 +1,5 @@
 <?php
-require_once(dirname(__FILE__)."/BaseToolsMod.class.php");
+require_once 'BaseToolsMod.class.php';
 class ToolsMod extends BaseToolsMod {
 	
 	function getAccionPredeterminada()
@@ -9,6 +9,6 @@ class ToolsMod extends BaseToolsMod {
 	
 	function accionListarHerramientas()
 	{		
-		$this->smarty->display('listaHerramientas.tpl');
+		$this->mostrar('listaHerramientas.tpl');
 	}
 }
