@@ -3,7 +3,7 @@ $(function(){
 			onLoad: function() {
 				if($('#fileManager').length==0)
 					$('input[name=ruta]').parent().append("<div id=\"fileManager\"></div>");
-				var fmOpts = {ajaxPath:'fileManager.php',
+				var fmOpts = {ajaxPath:'fileManager.php',						
 						events:{
 					         click: function() {
 					            var data = $(this).data();
