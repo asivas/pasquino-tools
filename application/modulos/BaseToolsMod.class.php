@@ -44,6 +44,8 @@ abstract class BaseToolsMod extends BaseAdminMod {
         
         if(!isset($this->_tilePath) && method_exists($this->smarty,'getTemplateVars')) //smarty3 y el tilePath está vacio
         	$this->_tilePath = $this->smarty->getTemplateVars('pQn'.$tilePathName.'Tpl');
+        
+        $this->initListColumns();
 	}
 	
 	function ejecutar($req)

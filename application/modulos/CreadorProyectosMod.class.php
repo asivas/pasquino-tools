@@ -1,63 +1,70 @@
 <?php
 require_once(dirname(__FILE__)."/BaseToolsMod.class.php");
 require_once 'entidades/Proyecto.class.php';
+require_once 'entidades/dao/DaoProyecto.class.php';
+require_once 'modulos/ProyectoForm.class.php';
+
 class CreadorProyectosMod extends BaseToolsMod
 {	
+	
+	function __construct() {
+		parent::__construct();
+		
+		$this->_tplLista = $this->smarty->getTemplateVars('pQnListaTpl');
+		$this->_tplForm = $this->smarty->getTemplateVars('pQnFormTpl');
+		$this->mainDao = new DaoProyecto();
+		
+		$this->setJsModulo('project');
+		$this->addCssFile('css/project.css');
+	}
+	
+	protected function crearForm() {
+		$this->_form = new ProyectoForm();
+	}
+	
+	protected function initListColumns() {
+		$this->addPropertyColumnToList('nombre', "Nombre");
+		$this->addColumnAcciones();
+	}
+	
+	/**
+	 * Carga el pedazo de html de los botones de accion para la administración de una entidad
+	 * @param Entidad $entidad la entidad sobre la cual se harán las posibles acciones
+	 * @param string $listaAccionesTpl la ruta del tpl de la lista de acciones, por defecto se pide a getListaAccionesTpl
+	 * @return Ambigous <string, void, boolean, string, mixed>
+	 */
+	function getGridAccionesItem($entidad,$listaAccionesTpl=null)
+	{
+		if(!isset($listaAccionesTpl))
+			$listaAccionesTpl = $this->getListaAccionesTpl();
+		$lowerModName = strtolower( str_replace("Mod", "", get_class($this)) );
+		$this->smarty->assign('entidad',$entidad);
+		$this->smarty->assign('modName',$lowerModName);
+		return $this->smarty->fetch($listaAccionesTpl);
+	}
 // 	function alta($req)
 // 	{		
 // 		$proyectoDir = Configuracion::getSystemRootDir()."/output/".$req['nombre'];
 // 		$d = dir($proyectoDir);
 // 		$d->
 // 	}
-	
-	
+
 	/**
-	 * Obtiene la lista de elementos para mostrar en el listado, dados un filtro y las variables de request
-	 * @param Criterio $filtro el criterio de filtro del listado
-	 * @param array $req variables de request preprocesadas
-	 * @param integer $limitCount limite de elementos que se mostrarán por página
+	 * Obtiene el id del item que se desea buscar/generar a partir del req
+	 * @param array $req
 	 */
-	protected function getListElements($filtro,$req,$limitCount=null) {
-		$dir = new DirectoryIterator(Configuracion::getSystemRootDir()."/output/");
-		while($dir->valid())
-		{
-			if($dir->isDir() && ($dir->getFilename()!='.' && $dir->getFilename()!='..' && $dir->getFilename()!='CVS'))
-			{
-				$p = new Proyecto();
-				$p->setNombre($dir->getFilename());
-				 
-				$lista[] = $p;
-			}
-			$dir->next();
-		}			
-		return $lista;	
+	protected function getItemId($req) {		
+		return $req['id'];
+	}
+
+	protected function assignSmartyTplVars() {
+		parent::assignSmartyTplVars();
+		
+		$this->setTplVar('tituloModulo','Proyectos');
+		$this->setTplVar('descripcionModulo','Administración de proyectos pQn');
 	}
 	
-	protected function lista($req) {
-		$filtro = $this->getFiltro($req);
-		$limitCount = $this->getPaginationLimitCount($req);
-		$aObjs = $this->getListElements($filtro, $req, $limitCount);
-		
-		if($req['display']=='xls')
-			$this->descargarListaExcel($aObjs, $req);
-		
-		$nombreClase="";
-		if(count($aObjs)>0)
-		{
-			$aObj = current($aObjs);
-			$nombreClase = get_class($aObj);
-		}
-		$this->smarty->assign('lista'.$nombreClase,$aObjs);
-		$this->smarty->assign('listaColumnas',$this->getColumnsList($req));
-		$this->smarty->assign('laLista',$aObjs);
-		$this->smarty->assign('claseEntidad',$nombreClase);
-		$this->smarty->assign('modName',strtolower( str_replace("Mod", "", get_class($this)) ));
-		
-		$this->smarty->assign('paginationCurrentPage',isset($req['pag'])?$req['pag']:1);
-		$this->smarty->assign('paginationLimitCount',$limitCount);
-		$this->smarty->assign('paginationFiltro',$filtro);
-		
-		$this->mostrar('proyectos/lista.tpl',$req['display']);
-	}
+	
+	
 
 }
