@@ -13,7 +13,8 @@ $(function(){
 				};
 				if($('input[name=ruta]').val()!='')
 					fmOpts.path = $('input[name=ruta]').val(); 
-				$('#fileManager').fileManager(fmOpts);				
+				$('#fileManager').fileManager(fmOpts);
+				$("#dlgProyecto").dialog({ position: 'center' });
 			}
 	}
 	initModulo('dlgProyecto','Proyecto','Proyecto','filtroNombre','botonAlta','articles','proyecto',optionsInit);
