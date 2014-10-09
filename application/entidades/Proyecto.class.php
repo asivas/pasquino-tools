@@ -1,9 +1,23 @@
 <?php
 require_once 'SistemaFCE/entidad/Entidad.class.php';
+
+class DbConfig {
+	
+	public $motor;
+	public $host;
+	public $usuario;
+	public $password;
+	public $nombreBase;
+	public $puerto;
+	
+}
+
 class Proyecto extends Entidad {
 	private $nombre;
 	private $id;
 	private $ruta;
+	
+	private $dbConfig;
 	
 	function getId() {
 		return $this->id;
@@ -26,12 +40,26 @@ class Proyecto extends Entidad {
 	}
 	
 	function getRuta() {
-		return $this->ruta;
+		return str_replace(DIRECTORY_SEPARATOR, '/', $this->ruta);
 	}
 	
 	function setRuta($newRuta) {
 		$this->ruta = $newRuta;
 	}
 	
+	/**
+	 * 
+	 * @param DbConfig $newDbConfig
+	 */
+	function setDbConfig($newDbConfig) {
+		$this->dbConfig = $newDbConfig;
+	}
+	
+	/**
+	 * @return DbConfig
+	 */
+	function getDbConfig() {
+		return $this->dbConfig;
+	}
 	
 }

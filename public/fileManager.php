@@ -32,7 +32,7 @@
 */
 
 
-jqFileManager::ProcessAjax(  dirname(dirname(dirname(__FILE__)))  );
+jqFileManager::ProcessAjax( dirname(dirname(dirname(dirname(__FILE__)))) );
 
 
 class jqFileManager {

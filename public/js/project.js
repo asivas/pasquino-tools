@@ -17,7 +17,7 @@ $(function(){
 				$("#dlgProyecto").dialog({ position: 'center' });
 			}
 	}
-	initModulo('dlgProyecto','Proyecto','Proyecto','filtroNombre','botonAlta','articles','proyecto',optionsInit);
+	initModulo('dlgProyecto','Proyecto','Proyecto','filtroNombre','botonAlta','articles','creadorProyectos',optionsInit);
 	$('body').on('change','input#toggletodos',function(e){
 		var setChecked = $(this).prop('checked');
 		$("#tablas input[type=checkbox]").each(function() {
