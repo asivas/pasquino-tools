@@ -1,18 +1,18 @@
 <?php
 
-require_once('datos/adodb/adodb.inc.php');	
+require_once('datos/adodb/adodb.inc.php');
 
-class Mapeador {	
+class Mapeador {
 	private $smarty;
 	//private $dbConfig;
 	private $db;
-	
+
 	var $errors;
-	
+
 	function __construct()
 	{
 		$systemRoot = dirname(__FILE__);
-		
+
 		$this->smarty = new Smarty(); // Handler de smarty
         $this->smarty->template_dir = $systemRoot.'/templates/'; // configuro directorio de templates
         $this->smarty->compile_dir = $systemRoot.'/tmp/templates_c'; // configuro directorio de compilacion
@@ -20,17 +20,17 @@ class Mapeador {
         $this->smarty->config_dir = $systemRoot.'/templates/configs'; // configuro directorio de configuraciones
         $this->smarty->assign('relative_images',"images");
 	}
-	
+
 	function setDB($host,$user,$pass,$db,$dbms='mysql',$port=null)
 	{
 		//$this->dbConfig = array('host'=>$host,'user'=>$user,'pass'=>$pass,'name'=>$db,'port'=$port);
 		$this->db = &ADONewConnection($dbms); # eg 'mysql' or 'postgres'
         $this->db->SetFetchMode(ADODB_FETCH_ASSOC);
-        if(isset($port))
+        if(!empty($port))
         	$host = "$host:$port";
         $this->db->NConnect($host, $user, $pass, $db);
 	}
-	
+
 	function getListaTablas()
 	{
 		$this->db->SetFetchMode(ADODB_FETCH_NUM);
@@ -43,54 +43,54 @@ class Mapeador {
 		$this->db->SetFetchMode(ADODB_FETCH_ASOC);
 		return $tablas;
 	}
-	private function uam($nombre) 
+	private function uam($nombre)
 	{
 		$palabrasNombre = split("[_ ]",$nombre);
 		$palabrasNombre[0] = strtolower($palabrasNombre[0]);
 		if(count($palabrasNombre)>1)
-		{	
+		{
 			for($i=1;$i<count($palabrasNombre);$i++)
-				$palabrasNombre[$i] = ucfirst($palabrasNombre[$i]);	
+				$palabrasNombre[$i] = ucfirst($palabrasNombre[$i]);
 		}
 		return implode($palabrasNombre);
 	}
-	
+
 	function _textoPropiedad($nombreProp,$campo=null)
 	{
 		return "	private \${$nombreProp};\n";
 	}
-	
+
 	function _textoMetodos($nombreProp,$campo=null)
 	{
 		return  "
 	public function get".ucfirst($nombreProp)."(){
 		return \$this->{$nombreProp};
 	}
-	
+
 	public function set".ucfirst($nombreProp)."(\$new".ucfirst($nombreProp)."){
 		\$this->{$nombreProp} = \$new".ucfirst($nombreProp).";
 	}";
 	}
-	
+
 	function _textoXml($tag,$nombreProp,$campo=null)
 	{
 		$nombreCampo = $campo['Field'];
 		return "		<{$tag} columna=\"{$nombreCampo}\" nombre=\"{$nombreProp}\" />\n";
 	}
-	
+
 	function mapearTabla($tabla,$dirEntidades,$dirMappings,$dirDaos)
-	{		
+	{
 		$nombreClase = ucfirst($this->uam($tabla));
 		$filenameEntidad = "{$nombreClase}.class.php";
 		$filenameXml = strtolower($nombreClase).".xml";
 		$filenameDao = "Dao{$nombreClase}.class.php";
-		
+
 		$textoPropiedades = "";
 		$textoMetodos = "";
-		
+
 		$textoClase = "<?php\nrequire_once \"SistemaFCE/entidad/Entidad.class.php\";\nclass {$nombreClase} extends Entidad {";
 		$textoDao = "<?php\nrequire_once \"SistemaFCE/dao/DaoBase.class.php\";\nclass Dao{$nombreClase} extends DaoBase{\n}";
-		$textoXml = 
+		$textoXml =
 '<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapping PUBLIC "-//FCEunicen//DTD Mapping//ES" "http://apps.econ.unicen.edu.ar/public/dtd/mapping.dtd" >
 <mapping path="'.basename($dirEntidades).'">
@@ -100,7 +100,7 @@ class Mapeador {
 		{
 			if($campo['Key']=='PRI')
 				$ids[] = $campo;
-			else 
+			else
 				$props[] = $campo;
 		}
 		if(is_array($ids))
@@ -109,9 +109,9 @@ class Mapeador {
 				$nombreCampo = $campo['Field'];
 				$nombreProp = $this->uam($nombreCampo);
 				$textoPropiedades .= $this->_textoPropiedad($nombreProp,$campo);
-				$textoMetodos .= $this->_textoMetodos($nombreProp,$campo);			
+				$textoMetodos .= $this->_textoMetodos($nombreProp,$campo);
 				$tag='id';
-				$id[$nombreCampo] = $nombreProp; 
+				$id[$nombreCampo] = $nombreProp;
 				$textoXml .= $this->_textoXml($tag, $nombreProp,$campo);
 			}
 		if(is_array($props))
@@ -120,7 +120,7 @@ class Mapeador {
 				$nombreCampo = $campo['Field'];
 				$nombreProp = $this->uam($nombreCampo);
 				$textoPropiedades .= $this->_textoPropiedad($nombreProp,$campo);
-				$textoMetodos .= $this->_textoMetodos($nombreProp,$campo);			
+				$textoMetodos .= $this->_textoMetodos($nombreProp,$campo);
 				$tag='propiedad';
 				$textoXml .= $this->_textoXml($tag, $nombreProp,$campo);
 			}
@@ -135,10 +135,10 @@ class Mapeador {
 	public function getId(){
 		return array({$arrId});
 	}
-	
+
 	".$textoMetodos;
-		}		
-	$textoXml .= 
+		}
+	$textoXml .=
 '	</clase>
 </mapping>';
 		$textoClase .= "\n/* propiedades */\n";
@@ -147,7 +147,7 @@ class Mapeador {
 		$textoClase .= $textoMetodos;
 		$textoClase .= "
 }";
-		
+
 		$fp = fopen($dirEntidades.'/'.$filenameEntidad, 'w');
 		fwrite($fp, $textoClase);
 		fclose($fp);
@@ -158,7 +158,7 @@ class Mapeador {
 		fwrite($fp, $textoXml);
 		fclose($fp);
 	}
-	
+
 	function mapearTablas($tablas,$dirOutput,$nombreDirEntidades='entidades')
 	{
 		//veo si existe o creo (si puedo) el dirOutput
@@ -177,21 +177,21 @@ class Mapeador {
 			mkdir($dirMappings);
 		if(!is_dir($dirDaos))
 			mkdir($dirDaos);
-		
+
 		if(is_array($tablas))
 		{
 			foreach($tablas as $t=>$dummy)
 			{
-				$results[] = "mapeando {$t}";				
+				$results[] = "mapeando {$t}";
 				$this->mapearTabla($t,$dirEntidades,$dirMappings,$dirDaos);
 			}
 		}
-		
+
 		$this->crearConfig($tablas, $dirOutput, $nombreDirEntidades);
 		return $results;
 	}
-	
-	
+
+
 	function crearConfig($tablas,$dirOutput)
 	{
 		$textoXmlConfig = '<?xml version="1.0" encoding="UTF-8"?>
@@ -229,11 +229,11 @@ class Mapeador {
 			<archivo nombre="sinPermisos.tpl" />
 		</template>
 	</templates>
-</sistema>';	
-	
+</sistema>';
+
 	$fp = fopen($dirOutput.'/config.xml', 'w');
 	fwrite($fp, $textoXmlConfig);
-	fclose($fp);	
-	
+	fclose($fp);
+
 	}
 }

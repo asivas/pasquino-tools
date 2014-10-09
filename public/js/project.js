@@ -25,5 +25,8 @@ $(function(){
 				});			
 	});
 	
-	
+	//tuchada de meter los botones de gridAccionesItem en el div .lista-acciones
+	$("li.gridAccionesItem div.lista-acciones").each(function(){
+			$(this).append($(this).parent().find("div.button"));
+		});
 });
