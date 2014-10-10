@@ -50,7 +50,12 @@ class CreadorProyectosMod extends BaseToolsMod
 		$this->setTplVar('descripcionModulo','Administración de proyectos pQn');
 	}
 
-	protected function crearFormMappings($tablas)
+	/**
+	 *
+	 * @param Proyecto $proyecto
+	 * @param array $tablas
+	 */
+	protected function crearFormMappings($proyecto,$tablas)
 	{
 		$this->formMappings = new BaseForm();
 
@@ -62,6 +67,7 @@ class CreadorProyectosMod extends BaseToolsMod
 			$this->formMappings->addElement('checkbox',"tablas[{$t}]",$t,$t);
 		}
 		$this->formMappings->addElement('submit','mapear','Mapear');
+		$this->formMappings->addElement('hidden','idProyecto',$proyecto->getId());
 	}
 
 	function accionMapear($req=null)
@@ -70,11 +76,8 @@ class CreadorProyectosMod extends BaseToolsMod
 		$dbConfig = $proyecto->getDbConfig();
 		$this->mapeador->setDB($dbConfig->host,$dbConfig->usuario,$dbConfig->password,$dbConfig->nombreBase,$dbConfig->motor,$dbConfig->puerto);
 
-
-		//$this->form->setDefaults(array('dir_output'=>dirname(dirname(dirname(__FILE__))).'/output/','db_ms'=>'mysql'));
-
 		$tablas = $this->mapeador->getListaTablas();
-		$this->crearFormMappings($tablas);
+		$this->crearFormMappings($proyecto,$tablas);
 
 
 		if(isset($_POST['mapear']))
@@ -94,6 +97,13 @@ class CreadorProyectosMod extends BaseToolsMod
 			$this->renderForm('maperForm',$this->formMappings);
 			$this->mostrar('form.tpl');
 			//$this->form->Display();
+	}
+
+
+	protected function info($req) {
+		$proyecto = $this->mainDao->findById($req['idProyecto']);
+		$this->setTplVar('proyecto', $proyecto);
+		$this->mostrar("proyectos/info.tpl");
 	}
 
 

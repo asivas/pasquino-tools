@@ -18,15 +18,15 @@
 		</archivos>
 		<acciones default="mapear">
 			<accion nombre="mapear"></accion></acciones>
-		<menuPrincipal tag="Mapeador" accion="mapear" name="mapeador"></menuPrincipal>
+		<menuPrincipal tag="" accion="" name=""></menuPrincipal>
 	</modulo>
-	<modulo nombre="CreadroProyectos">
+	<modulo nombre="CreadorProyectos">
 		<archivos>
 			<coreDir>
 				<archivoPrincipal nombre="CreadorProyectosMod.class.php" ></archivoPrincipal>
 			</coreDir>
 		</archivos>
-		<menuPrincipal tag="" accion="" name=""></menuPrincipal>
+		<menuPrincipal tag="Proyectos" accion="listar" name="proyectos"></menuPrincipal>
 	</modulo></modulos>
 	<templates default="default" path="templates">
 		<template dir=""></template></templates>

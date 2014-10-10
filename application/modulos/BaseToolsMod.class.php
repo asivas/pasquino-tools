@@ -116,4 +116,10 @@ abstract class BaseToolsMod extends BaseAdminMod {
 	protected function getUsuario() {
 		return null;
 	}
+
+	protected function checkPermisoAccion($accion,$nombreModulo=null,$usuario=null) {
+		if(!empty($accion))
+			return true;
+		//parent::checkPermisoAccion($accion);
+	}
 }

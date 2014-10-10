@@ -15,3 +15,14 @@ label[for=toggletodos] {
 	overflow: auto;
 	
 }
+
+#dbConfig > div {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+
+#infoProyecto div label {
+	float:left;
+	width: 130px;
+	font-weight: bold;
+}

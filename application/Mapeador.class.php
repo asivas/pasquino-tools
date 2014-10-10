@@ -3,23 +3,12 @@
 require_once('datos/adodb/adodb.inc.php');
 
 class Mapeador {
-	private $smarty;
 	//private $dbConfig;
 	private $db;
 
+	static private $templatesDirname = "templates";
+
 	var $errors;
-
-	function __construct()
-	{
-		$systemRoot = dirname(__FILE__);
-
-		$this->smarty = new Smarty(); // Handler de smarty
-        $this->smarty->template_dir = $systemRoot.'/templates/'; // configuro directorio de templates
-        $this->smarty->compile_dir = $systemRoot.'/tmp/templates_c'; // configuro directorio de compilacion
-        $this->smarty->cache_dir = $systemRoot.'/tmp/cache'; // configuro directorio de cache
-        $this->smarty->config_dir = $systemRoot.'/templates/configs'; // configuro directorio de configuraciones
-        $this->smarty->assign('relative_images',"images");
-	}
 
 	function setDB($host,$user,$pass,$db,$dbms='mysql',$port=null)
 	{
@@ -43,6 +32,13 @@ class Mapeador {
 		$this->db->SetFetchMode(ADODB_FETCH_ASOC);
 		return $tablas;
 	}
+
+	/**
+	 * Convierte los nombres separados por _ y espacio en las usadas para nombres de método con
+	 * todas las palabras juntas diferenciadas por comenzar en mayusculas
+	 * @param string $nombre
+	 * @return string
+	 */
 	private function uam($nombre)
 	{
 		$palabrasNombre = split("[_ ]",$nombre);
@@ -124,20 +120,20 @@ class Mapeador {
 				$tag='propiedad';
 				$textoXml .= $this->_textoXml($tag, $nombreProp,$campo);
 			}
-		if(count($id)>1)
-		{
-			foreach($id as $col => $prop)
-			{
-				$arrId .= "'{$col}'=>\$this->{$prop},";
-			}
-			$arrId = trim($arrId,',');
-			$textoMetodos = "
-	public function getId(){
-		return array({$arrId});
-	}
+// 		if(count($id)>1)
+// 		{
+// 			foreach($id as $col => $prop)
+// 			{
+// 				$arrId .= "'{$col}'=>\$this->{$prop},";
+// 			}
+// 			$arrId = trim($arrId,',');
+// 			$textoMetodos = "
+// 	public function getId(){
+// 		return array({$arrId});
+// 	}
 
-	".$textoMetodos;
-		}
+// 	".$textoMetodos;
+// 		}
 	$textoXml .=
 '	</clase>
 </mapping>';
@@ -168,15 +164,21 @@ class Mapeador {
 				$this->errors[] = 'El directorio de salida no exite';
 				return false;
 			}
-		$dirEntidades = $dirOutput."/{$nombreDirEntidades}";
-		$dirMappings = $dirOutput."/mappings";
-		$dirDaos = $dirEntidades."/daos";
-		if(!is_dir($dirEntidades))
-			mkdir($dirEntidades);
-		if(!is_dir($dirMappings))
-			mkdir($dirMappings);
-		if(!is_dir($dirDaos))
-			mkdir($dirDaos);
+
+		$dirConf 		   = "{$dirOutput}/conf";
+		$dirApplication    = "{$dirOutput}/application/";
+		$dirPublic 		   = "{$dirOutput}/public/";
+
+		$dirEntidades 	   = "{$dirApplication}/{$nombreDirEntidades}";
+		$dirDaos 		   = "{$dirEntidades}/daos";
+		$dirMappings 	   = "{$dirConf}/mappings";
+
+		if(!is_dir($dirConf))			mkdir($dirConf);
+		if(!is_dir($dirApplication))	mkdir($dirApplication);
+		if(!is_dir($dirEntidades))		mkdir($dirEntidades);
+		if(!is_dir($dirDaos))			mkdir($dirDaos);
+		if(!is_dir($dirMappings))		mkdir($dirMappings);
+		if(!is_dir($dirPublic))			mkdir($dirPublic);
 
 		if(is_array($tablas))
 		{
@@ -186,8 +188,9 @@ class Mapeador {
 				$this->mapearTabla($t,$dirEntidades,$dirMappings,$dirDaos);
 			}
 		}
-
-		$this->crearConfig($tablas, $dirOutput, $nombreDirEntidades);
+		if(!file_exists("{$dirConf}/config.xml"))
+			$this->crearConfig($tablas, $dirConf, $nombreDirEntidades);
+		$this->crearIndex($dirPublic);
 		return $results;
 	}
 
@@ -202,7 +205,8 @@ class Mapeador {
 		<datetime-format>%d/%m/%Y %H:%M</datetime-format>
 		<time-format>%H:%M</time-format>
 	</date-formats>
-	<mappings path="conf/mappings" >';
+	<mappings path="conf/mappings" >
+';
 		foreach($tablas as $t=>$dummy)
 		{
 			$nombreClase = ucfirst($this->uam($t));
@@ -215,18 +219,8 @@ class Mapeador {
 	</data-sources>
 	<modulos default="" path="modulos">
 	</modulos>
-	<templates default="default" path="skins">
+	<templates default="default" path="">
 		<template dir="default" nombre="default">
-			<dir ruta="common">
-				<archivo nombre="default.tpl" sys-name="Default" />
-				<archivo nombre="base.tpl" sys-name="Base" />
-				<archivo nombre="head.tpl" />
-				<archivo nombre="header.tpl" />
-				<archivo nombre="footer.tpl" />
-				<archivo nombre="menu.tpl" sys-name="Menu" />
-			</dir>
-			<archivo nombre="formLogin.tpl"/>
-			<archivo nombre="sinPermisos.tpl" />
 		</template>
 	</templates>
 </sistema>';
@@ -235,5 +229,17 @@ class Mapeador {
 	fwrite($fp, $textoXmlConfig);
 	fclose($fp);
 
+	}
+
+	function crearIndex($dirPublic) {
+		$indexContent ="<?php
+	require_once('visual/smarty3/libs/Smarty.class.php');
+	require_once('SistemaFCE/util/Configuracion.class.php');
+
+	SistemaFCE::initSistema();
+	SistemaFCE::ejecutarSistema();";
+		$fp = fopen("{$dirPublic}/index.php", 'w');
+		fwrite($fp, $indexContent);
+		fclose($fp);
 	}
 }
