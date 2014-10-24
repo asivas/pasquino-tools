@@ -106,6 +106,4 @@ class CreadorProyectosMod extends BaseToolsMod
 		$this->mostrar("proyectos/info.tpl");
 	}
 
-
-
 }
