@@ -145,14 +145,29 @@ class Mapeador {
 }";
 
 		$fp = fopen($dirEntidades.'/'.$filenameEntidad, 'w');
-		fwrite($fp, $textoClase);
-		fclose($fp);
+		if($fp)
+		{	
+			fwrite($fp, $textoClase);
+			fclose($fp);
+		}
+		else 
+			$this->errors[] = "No se pudo abrir {$dirEntidades}/{$filenameEntidad}";
+
 		$fp = fopen($dirDaos.'/'.$filenameDao, 'w');
-		fwrite($fp, $textoDao);
-		fclose($fp);
+		if($fp) {
+			fwrite($fp, $textoDao);
+			fclose($fp);
+		}
+		else 
+			$this->errors[] = "No se pudo abrir {$dirDaos}/{$filenameDao}";
+		
 		$fp = fopen($dirMappings.'/'.$filenameXml, 'w');
-		fwrite($fp, $textoXml);
-		fclose($fp);
+		if($fp) {
+			fwrite($fp, $textoXml);
+			fclose($fp);
+		}
+		else
+			$this->errors[] = "No se pudo abrir {$dirMappings}/{$filenameXml}";
 	}
 
 	function mapearTablas($tablas,$dirOutput,$nombreDirEntidades='entidades')
